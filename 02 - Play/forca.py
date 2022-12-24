@@ -1,4 +1,5 @@
 import commun_functions
+from random import choice as ch
 
 
 def jogar():
@@ -12,7 +13,13 @@ def jogar():
     02 (Médio) -  5 tentativas.
     03 (Dificil) - 3 tentativas)''')
 
-    palavra_secreta = 'banana'.lower()
+    l = []
+    with open('texto.txt') as doc:
+        for p in doc:
+            l.append(p.strip())
+
+    palavra_secreta = ch(l)
+
     print(f'\nPalavra secreta: ', end=' ')
 
     ps = ['*' for n in range(len(palavra_secreta))]
@@ -20,7 +27,9 @@ def jogar():
         print(l, end=' ')
     print('\n')
 
+    erro = 1
     tent = 0
+    nivel = 0
     while True:
 
         nivel = int(input('Qual nível você quer tentar: '))
@@ -37,7 +46,6 @@ def jogar():
             print('Digite uma opção válida.\n')
 
     while True:
-
         print(f'VocÊ possui {tent} tentativas.\n')
         chute = input('Qual letra: ').strip().lower()
 
@@ -47,20 +55,29 @@ def jogar():
                     ps[i] = letra
         else:
             tent -= 1
+            erro += 1
 
-        print('\nA palavra secreta é: ')
+        print('\nPalavra secreta: ')
         for l in ps:
             print(l, end=' ')
         print()
 
+        if nivel == 1:
+            commun_functions.desenha_forca_facil(erro)
+        elif nivel == 2:
+            commun_functions.desenha_forca_medio(erro)
+        elif nivel == 3:
+            commun_functions.desenha_forca_dificil(erro)
+
         if tent == 0:
-            print('Você perdeu.')
+            print(f'A Pavara secreta era: {palavra_secreta}')
+            commun_functions.imprime_mensagem_perdedor()
             print("\nFim do jogo")
             break
 
         comparador = [n for n in palavra_secreta]
         if ps == comparador:
-            print('Parabéns, Você venceu.')
+            commun_functions.imprime_mensagem_vencedor()
             break
 
 if (__name__ == "__main__"):
